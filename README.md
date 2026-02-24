@@ -4,39 +4,18 @@ Basic utility to create a `Readable` stream from other strings or streams. Under
 
 ## Why?
 
-When dealing with server-side rendering, stitching together the final HTML can often be awkward, ugly, and brittle. The data fetching patterns and string concatenation patterns tend to influence each other in bad ways. Additionally, you end up interacting directly with the `Response` object more than you should.
+When dealing with server-side rendering, stitching together the final HTML can often be awkward, ugly, and brittle. Many times it can lead to mixed async data fetching, string concatenation, and response-handling logic. That leads to several pain points:
 
-### Examples without this package
+- Hard-to-follow control flow: data fetching patterns and string concatenation patterns tend to influence each other in bad ways.
+- Tight coupling to `Response`: many solutions write directly to the response, scattering I/O logic across rendering code.
 
-#### Fragmented orchestration
-```js
-// ...
-  res.write('<!DOCTYPE html><html>');
+`readable-stream-builder` exists to make composition of streamed HTML (or any streamed text) simple and explicit. It accepts a mixed list of sources — plain strings, Node `Readable` streams, promises that resolve to either a string or `Readable` stream. It also accepts factory functions (which can be sync or async) that ultimately resolve to a string or `Readable` stream.
 
-  const renderHeadTemplate = (title, description, scripts, styles) => `
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-      ${scripts.map((src) => `<script type="text/javascript" src="${src}"/>`)}
-      ${styles.map((href) => `<link rel="stylesheet" href="${href}">`)}
-    </head>
-  `;
+These sources can be passed in during instantiation, added later with the `push()` method, or a mix of both.
 
-  // oops, someone forgot about non-blocking patterns
-  const metaTitle = await fetchTitle(); // 100ms
-  const metaDescription = await fetchDescription(); // 150ms
-  const headScripts = await getHeadScripts(); // 10ms
-  const headStyles = await getHeadStyles(); // 5ms
+**Benefits:**
 
-  res.write(renderHeadTemplate(metaTitle, metaDescription, headScripts, headStyles));
-  res.write('<body><div id="app">');
-
-  const appHtml = await renderToString(<App />);
-
-  res.write(appHtml);
-  res.write('</body></html>');
-  res.end();
-// ...
-```
-
- <!-- installation and usage -->
+- Compose synchronously and asynchronously without manual orchestration.
+- Keep most of your render code server and framework agnostic by interacting with the stream builder instead of the response.
+- Keep rendering logic declarative and local to components.
+- Stream content as it becomes available to reduce latency and memory usage.
