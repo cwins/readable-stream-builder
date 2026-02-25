@@ -1,0 +1,21 @@
+{
+  "name": "example-express-stream",
+  "version": "0.0.1",
+  "description": "Stream HTML fragments with Express and readable-stream-builder",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.19.2",
+    "readable-stream-builder": "file:../.."
+  },
+  "scripts": {
+    "test:node": "tsx ./__tests__/example.test.ts",
+    "test:bun": "bun ./__tests__/example.test.ts",
+    "test": "pnpm run test:node && pnpm run test:bun"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^18.19.130",
+    "tsx": "^4.21.0"
+  },
+  "packageManager": "pnpm@10.28.2"
+}

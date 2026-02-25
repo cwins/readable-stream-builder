@@ -2,15 +2,31 @@
   "name": "readable-stream-builder",
   "version": "0.0.1-alpha.1",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "pnpm run test:node && pnpm run test:bun",
+    "test:node": "pnpm run build && tsx --test __tests__/node/stream-builder.test.ts",
+    "test:bun": "pnpm run build && bun test __tests__/bun/stream-builder.test.ts",
+    "coverage": "pnpm run build && c8 --reporter=lcov --include dist/index.js tsx --test __tests__/node/stream-builder.test.ts",
+    "test:examples": "tsx scripts/test-examples.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.28.2",
   "devDependencies": {
-    "@types/node": "^18.19.130"
+    "@types/node": "^18.19.130",
+    "c8": "^7.4.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0"
   }
 }
