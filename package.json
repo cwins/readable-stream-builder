@@ -1,7 +1,12 @@
 {
   "name": "readable-stream-builder",
-  "version": "0.0.1-alpha.1",
-  "description": "",
+  "version": "0.0.2-alpha",
+  "description": "Simple utility for sequentially constructing a Readable stream from sync and async sources.",
+  "homepage": "https://github.com/cwins/readable-stream-builder#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cwins/readable-stream-builder.git"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,6 +16,9 @@
       "default": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "pnpm run test:node && pnpm run test:bun",
@@ -19,10 +27,13 @@
     "coverage": "pnpm run build && c8 --reporter=lcov --include dist/index.js tsx --test __tests__/node/stream-builder.test.ts",
     "test:examples": "tsx scripts/test-examples.ts"
   },
-  "keywords": [],
+  "keywords": ["streams", "streaming", "merge", "async", "ssr"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.28.2",
+  "peerDependencies": {
+    "@types/node": ">=18.0.0"
+  },
   "devDependencies": {
     "@types/node": "^18.19.130",
     "c8": "^7.4.0",
