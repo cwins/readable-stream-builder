@@ -27,7 +27,7 @@ The `build()` method returns a single `Readable` that you can feed to server `Re
 ```js
 import { Readable } from 'stream';
 import { createReadStream } from 'fs';
-import { ReadablePromiseStreamBuilder } from './src/index.js';
+import { ReadablePromiseStreamBuilder } from 'readable-stream-builder';
 
 // ...
 const handler = () => {
