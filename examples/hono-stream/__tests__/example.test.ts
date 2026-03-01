@@ -1,21 +1,23 @@
 import assert from 'node:assert/strict';
-import { Readable } from 'node:stream';
-import { renderHonoPage } from '../src/example.ts';
-
-async function streamToString(stream: Readable): Promise<string> {
-  const parts: string[] = [];
-
-  for await (const chunk of stream) {
-    parts.push(typeof chunk === 'string' ? chunk : chunk.toString());
-  }
-
-  return parts.join('');
-}
+import { createHonoServer } from '../src/example.ts';
 
 async function runTests() {
-  const html = await streamToString(renderHonoPage('edge-savvy'));
-  assert.ok(html.includes('<title>edge-savvy with Hono</title>'));
-  assert.ok(html.includes('Streaming keeps latency low.'));
+  const server = await createHonoServer();
+
+  try {
+    const response = await fetch(`http://${server.host}:${server.port}/testPage`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), 'text/html; charset=utf-8');
+    assert.ok(html.includes('<!doctype html>'));
+    assert.ok(html.includes('<title>Readable Stream Builder Example</title>'));
+    assert.ok(html.includes('<h1>Readable Stream Builder Example</h1>'));
+    assert.ok(html.includes('<section><p>Mix plain strings, async factories, and nested streams.</p></section>'));
+    assert.ok(html.includes('<footer>powered by readable-stream-builder</footer>'));
+  } finally {
+    await server.close();
+  }
 }
 
 try {

@@ -1,21 +1,23 @@
 import assert from 'node:assert/strict';
-import { Readable } from 'node:stream';
-import { renderExpressHomePage } from '../src/example.ts';
-
-async function streamToString(stream: Readable): Promise<string> {
-  const chunks: string[] = [];
-
-  for await (const chunk of stream) {
-    chunks.push(typeof chunk === 'string' ? chunk : chunk.toString('utf8'));
-  }
-
-  return chunks.join('');
-}
+import { createExpressServer } from '../src/example.ts';
 
 async function runTests() {
-  const html = await streamToString(renderExpressHomePage('Avery'));
-  assert.ok(html.includes('<title>Welcome Avery</title>'));
-  assert.ok(html.includes('powered by readable-stream-builder'));
+  const server = await createExpressServer();
+
+  try {
+    const response = await fetch(`http://${server.host}:${server.port}/testPage`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), 'text/html; charset=utf-8');
+    assert.ok(html.includes('<!doctype html>'));
+    assert.ok(html.includes('<title>Readable Stream Builder Example</title>'));
+    assert.ok(html.includes('<h1>Readable Stream Builder Example</h1>'));
+    assert.ok(html.includes('<section><p>Mix plain strings, async factories, and nested streams.</p></section>'));
+    assert.ok(html.includes('<footer>powered by readable-stream-builder</footer>'));
+  } finally {
+    await server.close();
+  }
 }
 
 try {

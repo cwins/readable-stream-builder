@@ -1,21 +1,24 @@
 import assert from 'node:assert/strict';
-import { Readable } from 'node:stream';
-import { renderFastifyDocument } from '../src/example.ts';
-
-async function streamToString(stream: Readable): Promise<string> {
-  const parts: string[] = [];
-
-  for await (const chunk of stream) {
-    parts.push(typeof chunk === 'string' ? chunk : chunk.toString());
-  }
-
-  return parts.join('');
-}
+import { createFastifyServer } from '../src/example.ts';
 
 async function runTests() {
-  const html = await streamToString(renderFastifyDocument('Lina'));
-  assert.ok(html.includes('Fastify stream for Lina'));
-  assert.ok(html.includes('Highlights: fast, safe, streaming'));
+  const server = await createFastifyServer();
+
+  try {
+    const response = await fetch(`http://${server.host}:${server.port}/testPage`);
+    const html = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), 'text/html; charset=utf-8');
+    assert.equal(response.headers.get('x-example'), 'fastify');
+    assert.ok(html.includes('<!doctype html>'));
+    assert.ok(html.includes('<title>Readable Stream Builder Example</title>'));
+    assert.ok(html.includes('<h1>Readable Stream Builder Example</h1>'));
+    assert.ok(html.includes('<section><p>Mix plain strings, async factories, and nested streams.</p></section>'));
+    assert.ok(html.includes('<footer>powered by readable-stream-builder</footer>'));
+  } finally {
+    await server.close();
+  }
 }
 
 try {
