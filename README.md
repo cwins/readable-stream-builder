@@ -1,5 +1,13 @@
 # readable-stream-builder
 
+[![Coverage](https://img.shields.io/badge/coverage-100%25-green)](./__tests__/)
+[![npm version](https://img.shields.io/npm/v/readable-stream-builder)](https://www.npmjs.com/package/readable-stream-builder)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Bun](https://img.shields.io/badge/Bun-Compatible-black?logo=bun&logoColor=white)](https://bun.sh/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
+
 Basic utility to create a `Readable` stream from other strings or streams. Under the hood, this just uses an async generator function with a little bit of logic, and returns a `Readable` that can be piped into a `Response` (or whatever else).
 
 ## Why?
