@@ -12,12 +12,8 @@ pnpm install
 ## Testing the library
 
 - `pnpm run test` runs unit tests for both Node and Bun to ensure compatibility with both, calling the following two commands in sequence `pnpm run test:node && pnpm run test:bun`.
-- `pnpm run test:node` executes the Node built-in runner against `__tests__/node/stream-builder.test.mjs` to confirm the builder serializes strings, promises, factories, and `Readable` streams in order.
-- `pnpm run test:bun` runs Bun's test runner on `__tests__/bun/stream-builder.test.ts` so you can verify compatibility with Bun environments.
-
-The following command runs the Node tests with coverage and outputs a report which you will find in `coverage/lcov-report/index.html`
-
-- `pnpm run coverage` wraps the Node test run in `c8` to produce an `lcov` report covering the library code only.
+- `pnpm run test:node` runs Vitest on `__tests__/stream-builder.test.ts` using Node and collects coverage.
+- `pnpm run test:bun` runs the same Vitest file using Bun via `bunx --bun vitest` with coverage disabled.
 
 ## Examples
 
@@ -29,4 +25,6 @@ Each folder under `examples/` is a standalone package that consumes `readable-st
 
 You can run the tests for all of the examples from the root of the project.
 
-- `pnpm run test:examples` installs dependencies and runs both Node and Bun tests for each example within the examples/ folder.
+- `pnpm run examples:install` installs dependencies for the `examples/` workspace.
+- `pnpm run examples:test` runs the shared Vitest suite for all example packages from the `examples/` workspace.
+- `pnpm run examples:clean` removes `node_modules` from all example workspace packages.

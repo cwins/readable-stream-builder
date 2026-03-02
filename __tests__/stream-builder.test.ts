@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'vitest';
 import { Readable } from 'node:stream';
-import { ReadablePromiseStreamBuilder } from '../../dist/index.js';
+import { ReadablePromiseStreamBuilder } from '../src';
 
 const htmlFixturePretty = `
 <!doctype html>
@@ -45,7 +45,24 @@ const wait = (ms: number = 100) => new Promise((res) => {
   setTimeout(res, ms);
 });
 
-describe('ReadablePromiseStreamBuilder (Bun)', () => {
+describe('ReadablePromiseStreamBuilder', () => {
+  it('can be instantiated with or without initial sources', async () => {
+    const streamBuilder1 = new ReadablePromiseStreamBuilder();
+    const streamBuilder2 = new ReadablePromiseStreamBuilder(['pizza']);
+
+    expect(streamBuilder1).toBeInstanceOf(ReadablePromiseStreamBuilder);
+    expect(streamBuilder2).toBeInstanceOf(ReadablePromiseStreamBuilder);
+
+    const stream1 = streamBuilder1.build();
+    const stream2 = streamBuilder2.build();
+
+    const output1 = await streamToString(stream1);
+    const output2 = await streamToString(stream2);
+
+    expect(output1).toBe('');
+    expect(output2).toBe('pizza');
+  });
+
   it('returns a new stream with each call to build()', async () => {
     const streamBuilder = new ReadablePromiseStreamBuilder(['foo bar']);
 
@@ -178,10 +195,7 @@ describe('ReadablePromiseStreamBuilder (Bun)', () => {
     const closingHtml = '</html>';
 
     const streamBuilder = new ReadablePromiseStreamBuilder([
-      () => docType,
-      () => openingHtml,
-      () => head,
-      () => openingBody,
+      () => [docType, openingHtml, head, openingBody].join('\n'),
       () => header,
       () => section1,
       () => section2,
@@ -345,7 +359,29 @@ describe('ReadablePromiseStreamBuilder (Bun)', () => {
     expect(output).toBe(HTML_FIXTURE);
   });
 
-  it('skips promises that resolve to unsupported values', async () => {
+  it('ignores sources that are unsupported types', async () => {
+    const streamBuilder = new ReadablePromiseStreamBuilder([
+      null!,
+      'valid in the middle :)',
+      { foo: 'bar' } as any
+    ]);
+
+    const output = await streamToString(streamBuilder.build());
+    expect(output).toBe('valid in the middle :)');
+  });
+
+  it('ignores source factory functions that return unsupported types', async () => {
+    const streamBuilder = new ReadablePromiseStreamBuilder([
+      () => null!,
+      'valid in the middle :)',
+      () => 4 as any
+    ]);
+
+    const output = await streamToString(streamBuilder.build());
+    expect(output).toBe('valid in the middle :)');
+  });
+
+  it('ignores source promises that resolve to unsupported types', async () => {
     const streamBuilder = new ReadablePromiseStreamBuilder([
       Promise.resolve(123 as any),
       'then valid',
@@ -355,7 +391,7 @@ describe('ReadablePromiseStreamBuilder (Bun)', () => {
     expect(output).toBe('then valid');
   });
 
-  it('ignores factory promises that resolve to unsupported values', async () => {
+  it('ignores source factory functions that return promises which resolve to unsupported types', async () => {
     const streamBuilder = new ReadablePromiseStreamBuilder([
       () => Promise.resolve(456 as any),
       'plus content',
@@ -365,11 +401,10 @@ describe('ReadablePromiseStreamBuilder (Bun)', () => {
     expect(output).toBe('plus content');
   });
 
-  it('accepts falsy initial sources without throwing', async () => {
-    const streamBuilder = new ReadablePromiseStreamBuilder(null as any);
-    streamBuilder.push('always there', () => Promise.resolve(' after'));
+  it('throws an error when initial sources is not an array', async () => {
 
-    const output = await streamToString(streamBuilder.build());
-    expect(output).toBe('always there after');
+    expect(() => {
+      const streamBuilder = new ReadablePromiseStreamBuilder(null as any);
+    }).toThrowErrorMatchingInlineSnapshot(`[Error: Error: Invalid Sources - Initial sources passed to ReadablePromiseStreamBuilder constructor must either be omitted or an Array of sources. Expected an Array, received a(n) object.]`);
   });
 });

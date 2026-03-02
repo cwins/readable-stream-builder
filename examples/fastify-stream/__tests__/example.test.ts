@@ -1,30 +1,30 @@
-import assert from 'node:assert/strict';
+import { describe, expect, it } from 'vitest';
 import { createFastifyServer } from '../src/example.ts';
 
-async function runTests() {
-  const server = await createFastifyServer();
+describe('fastify-stream example', () => {
+  it('serves the expected HTML tags on /testPage', async (ctx) => {
+    const server = await createFastifyServer();
 
-  try {
-    const response = await fetch(`http://${server.host}:${server.port}/testPage`);
-    const html = await response.text();
+    try {
+      const response = await fetch(`http://${server.host}:${server.port}/testPage`);
+      const html = await response.text();
 
-    assert.equal(response.status, 200);
-    assert.equal(response.headers.get('content-type'), 'text/html; charset=utf-8');
-    assert.equal(response.headers.get('x-example'), 'fastify');
-    assert.ok(html.includes('<!doctype html>'));
-    assert.ok(html.includes('<title>Readable Stream Builder Example</title>'));
-    assert.ok(html.includes('<h1>Readable Stream Builder Example</h1>'));
-    assert.ok(html.includes('<section><p>Mix plain strings, async factories, and nested streams.</p></section>'));
-    assert.ok(html.includes('<footer>powered by readable-stream-builder</footer>'));
-  } finally {
-    await server.close();
-  }
-}
+      // non-html checks
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toBe('text/html; charset=utf-8');
+      expect(response.headers.get('x-example')).toBe('fastify');
 
-try {
-  await runTests();
-} catch (error) {
-  console.error(error);
-  process.exitCode = 1;
-  throw error;
-}
+      // minimal guardrail checks
+      expect(html).toContain('<!doctype html>');
+      expect(html).toContain('<html>');
+      expect(html).toContain('<body>');
+      expect(html).toContain('</body>');
+      expect(html).toContain('</html>');
+
+      // full html for regression testing and easy viewing
+      expect(html).toMatchSnapshot();
+    } finally {
+      await server.close();
+    }
+  });
+});

@@ -29,7 +29,11 @@ export class ReadablePromiseStreamBuilder {
      * ```
      */
     constructor(initialSources: Array<StreamSource> = []) {
-        this._sources = [...(initialSources || [])];
+        if (!Array.isArray(initialSources)) {
+            throw new Error(`Error: Invalid Sources - Initial sources passed to ReadablePromiseStreamBuilder constructor must either be omitted or an Array of sources. Expected an Array, received a(n) ${typeof initialSources}.`)
+        }
+
+        this._sources = [...(initialSources)];
     }
 
     /**
@@ -94,6 +98,9 @@ async function* promiseStream(sources: StreamSource[]) {
             for await (const chunk of content) {
                 yield chunk;
             }
+        }
+        else {
+            continue;
         }
     }
 }

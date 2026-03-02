@@ -22,12 +22,19 @@
   "scripts": {
     "build": "tsc",
     "test": "pnpm run test:node && pnpm run test:bun",
-    "test:node": "pnpm run build && tsx --test __tests__/node/stream-builder.test.ts",
-    "test:bun": "pnpm run build && bun test __tests__/bun/stream-builder.test.ts",
-    "coverage": "pnpm run build && c8 --reporter=lcov --include dist/index.js tsx --test __tests__/node/stream-builder.test.ts",
-    "test:examples": "tsx scripts/test-examples.ts"
+    "test:node": "vitest run --coverage __tests__/stream-builder.test.ts",
+    "test:bun": "bunx --bun vitest run --coverage.enabled=false __tests__/stream-builder.test.ts",
+    "examples:install": "cd examples && pnpm i --no-lockfile",
+    "examples:clean": "cd examples && pnpm -r --include-workspace-root=true exec rm -rf node_modules",
+    "examples:test": "cd examples && pnpm run test"
   },
-  "keywords": ["streams", "streaming", "merge", "async", "ssr"],
+  "keywords": [
+    "streams",
+    "streaming",
+    "merge",
+    "async",
+    "ssr"
+  ],
   "author": "",
   "license": "MIT",
   "packageManager": "pnpm@10.28.2",
@@ -35,9 +42,9 @@
     "@types/node": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.19.130",
-    "c8": "^7.4.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.5.0"
+    "@types/node": "^20.19.35",
+    "@vitest/coverage-v8": "^4.0.18",
+    "typescript": "^5.5.0",
+    "vitest": "^4.0.18"
   }
 }

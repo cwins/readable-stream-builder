@@ -1,0 +1,19 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test:node": "vitest run",
+    "test:bun": "bunx --bun vitest run",
+    "test": "pnpm run test:node && pnpm run test:bun"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "devDependencies": {
+    "jest-serializer-html": "^7.1.0",
+    "vitest": "^3.2.4"
+  }
+}

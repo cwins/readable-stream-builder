@@ -2,10 +2,11 @@
   "name": "example-hono-stream",
   "version": "0.0.1",
   "description": "Hono route demonstrating streaming responses with readable-stream-builder",
+  "private": true,
   "type": "module",
   "scripts": {
-    "test:node": "tsx ./__tests__/example.test.ts",
-    "test:bun": "bun __tests__/example.test.ts",
+    "test:node": "vitest run ./__tests__/example.test.ts",
+    "test:bun": "bunx --bun vitest run ./__tests__/example.test.ts",
     "test": "pnpm run test:node && pnpm run test:bun"
   },
   "dependencies": {
@@ -13,8 +14,8 @@
     "readable-stream-builder": "file:../.."
   },
   "devDependencies": {
-    "@types/node": "^18.19.130",
-    "tsx": "^4.21.0"
+    "@types/node": "^20.19.0",
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.28.2"
 }
