@@ -1,6 +1,6 @@
 {
   "name": "readable-stream-builder",
-  "version": "0.0.3-alpha",
+  "version": "1.0.0",
   "description": "Simple utility for sequentially constructing a Readable stream from sync and async sources.",
   "homepage": "https://github.com/cwins/readable-stream-builder#readme",
   "repository": {
