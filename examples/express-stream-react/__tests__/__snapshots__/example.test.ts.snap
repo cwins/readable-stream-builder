@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`express-stream-react example > streams react content on /testPage 1`] = `
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
+      Product: stream-builder - readable-stream-builder
+    </title>
+    <meta name="description"
+          content="Streaming product details for stream-builder."
+    >
+    <meta name="robots"
+          content="index,follow"
+    >
+    <link rel="canonical"
+          href="/testPage"
+    >
+  </head>
+  <body>
+    <main id="root">
+      <h1>
+        Product: stream-builder - readable-stream-builder
+      </h1>
+      <section class="app-shell">
+        <header>
+          <p>
+            Request Path: /testPage
+          </p>
+        </header>
+        <article class="product-page">
+          <h2>
+            stream-builder
+          </h2>
+          <p>
+            Price: $39.00
+          </p>
+          <p>
+            Availability: In stock
+          </p>
+          <ul>
+            <li>
+              Built for progressive streaming
+            </li>
+            <li>
+              Composable async data flow
+            </li>
+            <li>
+              Framework-agnostic response pipeline
+            </li>
+          </ul>
+        </article>
+      </section>
+    </main>
+    <footer>
+      powered by readable-stream-builder
+    </footer>
+  </body>
+</html>
+`;
